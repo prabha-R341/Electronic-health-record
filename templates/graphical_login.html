@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Graphical Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            overflow-y: scroll;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .image-item {
+            cursor: pointer;
+            border: 3px solid transparent;
+            text-align: center;
+        }
+        .image-item.selected {
+            border-color: green;
+        }
+        .image-item img {
+            width: 100px;
+            height: 100px;
+        }
+        .container-custom {
+            display: flex;
+            margin-top: -2rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+            padding: 20px;
+            width: 100%;
+            max-width: 700px;
+        }
+        .form-header {
+            text-align: center;
+        }
+        .form-header h2 {
+            font-weight: bold;
+            color: #0d47a1;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero-section">
+        <div class="animated-bg"></div>
+        <div class="container container-custom">
+            <div class="card shadow">
+                <div class="form-header">
+                    <h2 class="text-center mb-4">Graphical Login</h2>
+                </div>
+                <form id="graphical-login-form" method="POST" action="{{ url_for('graphical_login') }}">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ session.get('username', '') }}" readonly required>
+                    </div>
+                    <div class="image-grid">
+                        {% for i in range(10, 22) %}
+                            <div class="image-item" onclick="toggleSelection(this)">
+                                <img src="{{ url_for('static', filename='images/' + i|string + '.png') }}" alt="Authentication Image">
+                                <input type="checkbox" name="selected_images" value="{{ i }}" style="display: none;">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            positionClass: "toast-top-right",
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+        };
+        $(document).ready(function() {
+            $('#graphical-login-form').submit(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    url: "{{ url_for('graphical_login') }}",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.status === "success") {
+                            toastr.success(response.message);
+                            setTimeout(function() {
+                                window.location.href = response.redirect;
+                            }, 2000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function() {
+                        toastr.error("An error occurred. Please try again.");
+                    }
+                });
+            });
+        });
+
+        function toggleSelection(element) {
+            element.classList.toggle('selected');
+            let checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+        }
+    </script>
+</body>
+</html>

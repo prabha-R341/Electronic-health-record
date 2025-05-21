@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart authentication and secure file transfer (EHR) m</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0043CE;
+            --secondary: #00A6ED;
+            --accent: #41D3BD;
+            --success: #24A148;
+            --warning: #F1C21B;
+            --danger: #DA1E28;
+            --light: #F4F7FB;
+            --dark: #161616;
+            --gradient: linear-gradient(120deg, var(--primary), var(--secondary));
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light);
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Navbar */
+        .navbar {
+            background: rgba(203, 235, 246, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 0.75rem 0;
+            transition: all 0.4s ease;
+        }
+
+        .navbar.scrolled {
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: var(--gradient);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 3px;
+        }
+
+        .nav-link:hover::before {
+            width: 70%;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #cad9ef 0%, #e4e7eb 100%);
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(0, 67, 206, 0.03) 0%,
+                rgba(0, 166, 237, 0.03) 10%,
+                rgba(65, 211, 189, 0.03) 20%
+            );
+            animation: bg-animation 30s linear infinite;
+        }
+
+        @keyframes bg-animation {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--dark);
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Animated Cards */
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card:hover::before {
+            opacity: 0.03;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            color: white;
+            font-size: 2rem;
+            transform: rotate(-5deg);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: rotate(0deg) scale(1.1);
+        }
+
+        /* Pulse Animation for Medical Data */
+        .pulse-circle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(65, 211, 189, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(65, 211, 189, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(65, 211, 189, 0);
+            }
+        }
+
+        /* Statistics Section */
+        .stats-section {
+            background: white;
+            position: relative;
+            padding: 6rem 0;
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: white;
+            transform: skewY(-3deg);
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .stat-number::after {
+            content: '+';
+            font-size: 2rem;
+            position: absolute;
+            top: 0;
+            right: -20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Interactive Buttons */
+        .btn-primary {
+            background: var(--gradient);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            z-index: 1;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, var(--secondary), var(--accent));
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 67, 206, 0.3);
+        }
+
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+
+        /* Medical Data Visualization */
+        .data-flow {
+            position: relative;
+            height: 400px;
+            background: rgba(217, 208, 208, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .data-particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: dataFlow 3s linear infinite;
+        }
+
+        @keyframes dataFlow {
+            0% {
+                transform: translateY(-100%) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(500%) translateX(100px);
+                opacity: 0;
+            }
+        }
+        .rating {
+            display: flex;
+            justify-content: space-between;
+            width: 150px;
+        }
+        
+        .rating input {
+            display: none;
+        }
+        
+        .rating label {
+            font-size: 30px;
+            color: #ccc;
+            cursor: pointer;
+        }
+        
+        .rating input:checked ~ label {
+            color: #ffcc00;
+        }
+        
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #ffcc00;
+        }
+/* Modal background color */
+.modal-content {
+    background-color: #add8e6; /* Light blue background */
+}
+
+/* Font color inside the modal */
+.modal-body, .modal-title, .modal-footer {
+    color: black; /* Black font color */
+}
+
+/* Button style (optional, for better contrast) */
+.btn-primary {
+    background-color: #0056b3; /* Darker blue for buttons */
+    border-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d; /* Gray color for close button */
+    border-color: #6c757d;
+}
+
+/* Optional: Improve the label text appearance */
+.modal-label {
+    color: black;
+}
+        
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navigation -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fas fa-laptop-medical text-primary me-2"></i>
+                <span class="fw-bold">Smart authentication and secure file transfer (EHR) </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#security">Security</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#integration">Integration</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('patient_login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Animation -->
+    <section class="hero-section">
+        <div class="animated-bg"></div>
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6 hero-content" data-aos="fade-right">
+                    <h1 class="hero-title">Smart authentication and secure file transfer (EHR)</h1>
+                    <p class="hero-subtitle mb-4">Seamlessly connect healthcare providers, patients, and medical data through our advanced centralized electronic health record system.</p>
+                    <div class="d-flex gap-3">
+                        <a href="{{ url_for('static', filename='August_2023_mess.pdf') }}" target="_blank" class="btn btn-primary btn-lg">
+                            Demo request
+                        </a>
+                        
+                        <button class="btn btn-outline-primary rounded-pill">Learn More</button>
+                    </div>
+                </div>
+                <div class="col-lg-6 position-relative" data-aos="fade-left">
+                    {% if session.get('registration_complete') %}
+                    <a href="{{ url_for('patient_login') }}">
+                        <button type="button" class="btn btn-primary btn-lg" 
+                            style="position: absolute; top: -120px; right: 0; width: 150px; height: 150px; 
+                                   display: flex; flex-direction: column; align-items: center; 
+                                   justify-content: center; font-size: 1.2rem;">
+                            <i class="fas fa-user-shield" style="font-size: 3rem; margin-bottom: 5px;"></i>
+                            Access EHR
+                        </button>
+                    </a>
+                {% endif %}
+                    <div class="data-flow">
+                        <!-- Data particles will be added by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        
+    <!-- Key Features Section -->
+    <section class="py-6" id="features">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold mb-3">Advanced CEHR Features</h2>
+                <p class="text-muted">Next-generation electronic health record management</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4 class="mb-3">HIPAA Compliant Security</h4>
+                        <p class="text-muted">End-to-end encryption and advanced security protocols to protect sensitive medical data.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync"></i>
+                        </div>
+                        <h4 class="mb-3">Real-time Synchronization</h4>
+                        <p class="text-muted">Instant updates across all connected healthcare facilities and providers.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4 class="mb-3">AI-Powered Analytics</h4>
+                        <p class="text-muted">Advanced analytics for better diagnosis and treatment recommendations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats-section" id="stats">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="500">0</div>
+                        <div class="stat-label">Healthcare Facilities</div>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="1000">0</div>
+                        <div class="stat-label">Patient Records</div>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="5000">0</div>
+                        <div class="stat-label">Healthcare Providers</div>
+                    </div>
+                </div>
+                <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-card">
+                        <div class="stat-number" data-count="99.9">0</div>
+                        <div class="stat-label">Uptime Percentage</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security Features Section -->
+    <section class="py-6 bg-light" id="security">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h2 class="fw-bold mb-4">Enterprise-Grade Security</h2>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="feature-icon me-4" style="width: 60px; height: 60px;">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div>
+                            <h4>End-to-End Encryption</h4>
+                            <p class="text-muted mb-0">Military-grade encryption for all stored and transmitted data</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="feature-icon me-4" style="width: 60px; height: 60px;">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div>
+                            <h4>Access Control</h4>
+                            <p class="text-muted mb-0">Role-based access control with detailed audit trails</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="feature-icon me-4" style="width: 60px; height: 60px;">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <div>
+                            <h4>HIPAA Certified</h4>
+                            <p class="text-muted mb-0">Fully compliant with healthcare data protection standards</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="position-relative">
+                        <div class="pulse-circle" style="top: 20%; left: 30%;"></div>
+                        <div class="pulse-circle" style="top: 60%; left: 70%;"></div>
+                        <img src="https://img.freepik.com/premium-photo/3d-social-engineering-icon-paired-with-secure-server-symbol-ideal-isolated-vector-designs_980716-454313.jpg?ga=GA1.1.519618786.1724677143&semt=ais_hybrid" alt="Security Infrastructure" class="img-fluid rounded-lg shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integration Section -->
+    <section class="py-6" id="integration">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold mb-3">Seamless Integration</h2>
+                <p class="text-muted">Connect with your existing healthcare systems</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card text-center">
+                        <img src="https://img.freepik.com/premium-photo/digital-device-with-red-screen-that-says-heartbeat_1122354-16304.jpg?ga=GA1.1.519618786.1724677143&semt=ais_hybrid" alt="EMR Systems" class="mb-4">
+                        <h5>EMR Systems</h5>
+                        <p class="text-muted">Integrate with major EMR providers</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card text-center">
+                        <img src="https://img.freepik.com/premium-photo/room-with-lot-equipment-large-monitor_1065421-32222.jpg?ga=GA1.1.519618786.1724677143&semt=ais_hybrid" alt="Lab Systems" class="mb-4">
+                        <h5>Lab Systems</h5>
+                        <p class="text-muted">Connect with laboratory information systems</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card text-center">
+                        <img src="https://img.freepik.com/premium-photo/virtual-pharmacy-interface-computer-screen-seamless-medication-order-online-convenience_38013-69241.jpg?ga=GA1.1.519618786.1724677143&semt=ais_hybrid" alt="Pharmacy Systems" class="mb-4">
+                        <h5>Pharmacy Systems</h5>
+                        <p class="text-muted">Link with pharmacy management software</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-card text-center">
+                        <img src="https://img.freepik.com/premium-photo/8-free-tools-help-marketers-track-optimize-ppc-ad-campaigns-better-results_1279828-8803.jpg?ga=GA1.1.519618786.1724677143&semt=ais_hybrid" alt="Billing Systems" class="mb-4">
+                        <h5>Billing Systems</h5>
+                        <p class="text-muted">Seamless billing system integration</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-6 bg-light" id="demo">
+        <div class="container">
+            <div class="row justify-content-center py-5 mt-3 mb-3">
+                <div class="col-lg-8 text-center">
+                    <h2 class="fw-bold mb-4">Need access restored?</h2>
+                    <p class="text-muted mb-5">Request our administrator to unlock your account and get back in instantly!</p>
+                    <!-- Button to open the modal -->
+                    <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#unlockModal">
+                        Account Unlock Request
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="unlockModal" tabindex="-1" aria-labelledby="unlockModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="unlockModalLabel">Unlock Account Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url_for('request_demo') }}" method="post">
+                        <div class="mb-3">
+                            <label for="user_email" class="form-label">Your Email</label>
+                            <input type="email" class="form-control" id="user_email" name="user_email" required>
+                        </div>
+                        <input type="hidden" name="subject" value="Unlock Account Request">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-5" style="color: white;">
+        <div class="container" style="color: #F4F7FB;">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5 class="mb-4" style="color: white;">
+                        <i class="fas fa-laptop-medical me-2"></i>MediSync
+                    </h5>
+                    <p  style="color: white;">
+                        Revolutionizing healthcare records management through advanced technology and seamless integration.
+                    </p>
+                </div>
+                <div class="col-lg-2">
+                    <h5 class="mb-4" style="color: white;">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#features"  style="color: white;">Features</a></li>
+                        <li><a href="#security" style="color: white;">Security</a></li>
+                        <li><a href="#integration" style="color: white;">Integration</a></li>
+                        <li><a href="#demo" style="color: white;">Request Demo</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="mb-4" style="color: white;">Contact</h5>
+                    <ul class="list-unstyled" style="color: white;">
+                        <li><i class="fas fa-envelope me-2"></i>contact@medisync.com</li>
+                        <li><i class="fas fa-phone me-2"></i>(555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i>123 Healthcare Ave, Medical District</li>
+                        <!-- Button to open the modal -->
+                        <li><button type="button" class="btn btn-light mt-3" data-bs-toggle="modal" data-bs-target="#feedbackModal">Give Feedback</button></li>
+                    </ul>
+                </div>
+                
+                <!-- Bootstrap Modal -->
+                <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="feedbackModalLabel">Submit Your Feedback</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ url_for('submit_feedback') }}" method="post">
+                                    <div class="mb-3">
+                                        <label for="user_email" class="form-label">Your Email</label>
+                                        <input type="email" class="form-control" id="user_email" name="user_email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="patient_id" class="form-label">Patient ID</label>
+                                        <input type="text" class="form-control" id="patient_id" name="patient_id" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="feedback" class="form-label">Feedback</label>
+                                        <textarea class="form-control" id="feedback" name="feedback" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Rating</label>
+                                        <div class="rating">
+                                            <input type="radio" name="rating" value="1" id="star1"><label for="star1" class="fa fa-star"></label>
+                                            <input type="radio" name="rating" value="2" id="star2"><label for="star2" class="fa fa-star"></label>
+                                            <input type="radio" name="rating" value="3" id="star3"><label for="star3" class="fa fa-star"></label>
+                                            <input type="radio" name="rating" value="4" id="star4"><label for="star4" class="fa fa-star"></label>
+                                            <input type="radio" name="rating" value="5" id="star5"><label for="star5" class="fa fa-star"></label>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3">
+                    <h5 class="mb-4" style="color: white;">Newsletter</h5>
+                    <form>
+                        <div class="input-group mb-3">
+                            <input type="email" class="form-control" placeholder="Your email">
+                            <button class="btn btn-primary" type="button">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: white;">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 " style="color: white;">&copy; 2025 MediSync. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class=" me-3" style="color: white;">Privacy Policy</a>
+                    <a href="#" class="me-3" style="color: white;">Terms of Service</a>
+                    <a href="#" style="color: white;">HIPAA Compliance</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Add data particles
+        function createDataParticle() {
+            const dataFlow = document.querySelector('.data-flow');
+            const particle = document.createElement('div');
+            particle.classList.add('data-particle');
+            particle.style.left = Math.random() * 100 + '%';
+            dataFlow.appendChild(particle);
+            
+            particle.addEventListener('animationend', () => {
+                particle.remove();
+            });
+        }
+
+        setInterval(createDataParticle, 300);
+
+        // Animate statistics
+        const stats = document.querySelectorAll('.stat-number');
+        stats.forEach(stat => {
+            const target = parseInt(stat.getAttribute('data-count'));
+            let current = 0;
+            const increment = target / 100;
+            const updateCount = () => {
+                if (current < target) {
+                    current += increment;
+                    stat.textContent = Math.round(current);
+                    requestAnimationFrame(updateCount);
+                } else {
+                    stat.textContent = target;
+                }
+            };
+            updateCount();
+        });
+    </script>
+</body>
+</html>

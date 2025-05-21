@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <style>
+  
+    .login-container {
+      width: 400px;
+      padding: 2rem;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .social-login button {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    /* Animated Background */
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #cad9ef 0%, #e4e7eb 100%);
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(0, 67, 206, 0.03) 0%,
+                rgba(0, 166, 237, 0.03) 10%,
+                rgba(65, 211, 189, 0.03) 20%
+            );
+            animation: bg-animation 30s linear infinite;
+        }
+
+        @keyframes bg-animation {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            position: absolute; /* or fixed if you want it always centered on the viewport */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            width: 100%; /* Optional: Ensures full width */
+            height: 100vh; /* Ensures full height of viewport */
+        }
+        
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--dark);
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Animated Cards */
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card:hover::before {
+            opacity: 0.03;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            color: white;
+            font-size: 2rem;
+            transform: rotate(-5deg);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: rotate(0deg) scale(1.1);
+        }
+
+        /* Pulse Animation for Medical Data */
+        .pulse-circle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(65, 211, 189, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(65, 211, 189, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(65, 211, 189, 0);
+            }
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h2 {
+            font-weight: bold;
+            color: #0d47a1;
+        }
+        .form-header img {
+            max-width: 150px; /* Adjust logo size as needed */
+            margin-bottom: 1rem; /* Space between logo and heading */
+        }
+  </style>
+</head>
+<body>
+
+    <section class="hero-section">
+        <div class="animated-bg"></div>
+        <div class="container hero-content">
+            <div class="login-container">
+                <div class="form-header">
+                    <img src="https://img.freepik.com/premium-vector/minimalist-emblem-representing-medical-center-craft-minimalist-emblem-that-signifies-medical-professionalism-with-subtle-nod-care-compassion_538213-64419.jpg?ga=GA1.1.519618786.1724677143&semt=ais_hybrid" alt="Patient Logo">
+                    <h2>Normal Login</h2>
+                </div>
+        
+                <form method="POST" action="{{ url_for('patient_login') }}">
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                  </div>
+            
+                  <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                  </div>
+            
+                  <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+                </form>
+                <p class="text-center mt-3">
+                  Don't have an account? <a  href="{{ url_for('register') }}">Register</a>
+                </p>
+              </div>
+        </div>
+    </section>
+
+    
+
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Toastr CSS & JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("form").submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+    
+            $.ajax({
+                url: "{{ url_for('patient_login') }}",
+                type: "POST",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.status === "success") {
+                        toastr.success(response.message);
+                        setTimeout(function() {
+                            window.location.href = response.redirect;
+                        }, 2000);  // Delay redirection to allow message display
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function() {
+                    toastr.error("An error occurred. Please try again.");
+                }
+            });
+        });
+    });
+</script>
+    
+
+</body>
+</html>

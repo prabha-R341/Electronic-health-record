@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Patient Registration</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #e8f5fe, #bbdefb);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.8s ease-in-out;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-header h2 {
+            font-weight: bold;
+            color: #0d47a1;
+        }
+        .form-header img {
+            max-width: 150px; /* Adjust logo size as needed */
+            margin-bottom: 1rem; /* Space between logo and heading */
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #1565c0;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-submit {
+            background-color: #1565c0;
+            color: white;
+            border-radius: 30px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn-submit:hover {
+            background-color: #0d47a1;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(13, 71, 161, 0.4);
+        }
+
+        /* Custom Toast Styles */
+        #registrationToast .toast-body {
+            background-color: #28a745; /* Green background */
+            color: white; /* White text */
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container animate__animated animate__zoomIn">
+        <div class="form-header">
+            <img src="https://img.freepik.com/premium-vector/minimalist-emblem-representing-medical-center-craft-minimalist-emblem-that-signifies-medical-professionalism-with-subtle-nod-care-compassion_538213-64419.jpg?ga=GA1.1.519618786.1724677143&semt=ais_hybrid" alt="Patient Logo">
+            <h2>Patient Registration</h2>
+        </div>
+
+        <form id="registrationForm" action="{{ url_for('register') }}" method="POST">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                        <input type="date" class="form-control" id="dob" name="dob" required>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
+                        <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="Enter Mobile Number" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email Address" required>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-submit px-4">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Toast Container -->
+    <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+        <div id="registrationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Registration</strong>
+                <small>Just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Registration Successful!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+        
+            // Show the toast message
+            const toast = new bootstrap.Toast(document.getElementById('registrationToast'));
+            toast.show();
+        
+            // Allow actual form submission after showing toast
+            setTimeout(() => {
+                this.submit();
+            }, 2000); // Allow user to see the toast before submission
+        });
+        
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
